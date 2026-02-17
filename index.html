@@ -88,9 +88,9 @@
   canvas.height = window.innerHeight;
 
   const bucket = {
-    x: canvas.width / 2 - 40,
+    x: canvas.width / 2 - 60,
     y: canvas.height - 60,
-    width: 80,
+    width: 120,
     height: 40,
     speed: 10
   };
@@ -109,7 +109,6 @@
   let highScore = localStorage.getItem("highScore") || 0;
   highScoreDisplay.textContent = "ハイスコア: " + highScore;
 
-  // キーボード操作
   let keys = { left: false, right: false };
   window.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") keys.left = true;
@@ -126,7 +125,7 @@
         x: Math.random() * canvas.width,
         y: -20,
         radius: 10,
-        speed: 4 + Math.random() * 3
+        speed: 2 + Math.random() * 2
       });
     }
   }
@@ -150,7 +149,6 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBucket();
 
-    // キーボードでバケツを動かす
     if (keys.left) bucket.x -= bucket.speed;
     if (keys.right) bucket.x += bucket.speed;
     if (bucket.x < 0) bucket.x = 0;
@@ -211,9 +209,8 @@
     startGame();
   }
 
-  setInterval(createDrop, 800);
+  setInterval(createDrop, 1200);
 
-  // スマホの傾き操作
   window.addEventListener("deviceorientation", (e) => {
     if (e.gamma !== null && gameRunning) {
       bucket.x += e.gamma;
