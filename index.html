@@ -41,6 +41,12 @@
       color: white;
       border-radius: 10px;
     }
+    .overlay p {
+      font-size: 18px;
+      color: #004466;
+      margin-top: 40px;
+      text-align: center;
+    }
     #highScore {
       position: absolute;
       top: 10px;
@@ -61,6 +67,10 @@
 <div id="titleScreen" class="overlay">
   <h1>💧しずくキャッチゲーム💧</h1>
   <button onclick="startGame()">スタート</button>
+  <p>
+    📱 スマホ：傾けてバケツを動かそう！<br>
+    💻 パソコン：← → キーでバケツを操作！
+  </p>
 </div>
 
 <div id="gameOverScreen" class="overlay" style="display:none;">
@@ -99,6 +109,17 @@
   let highScore = localStorage.getItem("highScore") || 0;
   highScoreDisplay.textContent = "ハイスコア: " + highScore;
 
+  // キーボード操作
+  let keys = { left: false, right: false };
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") keys.left = true;
+    if (e.key === "ArrowRight") keys.right = true;
+  });
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "ArrowLeft") keys.left = false;
+    if (e.key === "ArrowRight") keys.right = false;
+  });
+
   function createDrop() {
     if (gameRunning && missed < maxMisses) {
       drops.push({
@@ -128,6 +149,13 @@
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBucket();
+
+    // キーボードでバケツを動かす
+    if (keys.left) bucket.x -= bucket.speed;
+    if (keys.right) bucket.x += bucket.speed;
+    if (bucket.x < 0) bucket.x = 0;
+    if (bucket.x + bucket.width > canvas.width)
+      bucket.x = canvas.width - bucket.width;
 
     drops.forEach((drop, index) => {
       drop.y += drop.speed;
@@ -185,6 +213,7 @@
 
   setInterval(createDrop, 800);
 
+  // スマホの傾き操作
   window.addEventListener("deviceorientation", (e) => {
     if (e.gamma !== null && gameRunning) {
       bucket.x += e.gamma;
